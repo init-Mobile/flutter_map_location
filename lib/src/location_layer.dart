@@ -6,7 +6,7 @@ import 'package:flutter_compass/flutter_compass.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_location/src/types.dart';
 import 'package:location/location.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 import 'location_marker.dart';
 import 'location_options.dart';
