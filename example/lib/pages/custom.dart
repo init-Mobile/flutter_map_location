@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
 
@@ -13,6 +14,7 @@ class CustomPage extends StatefulWidget {
 
 class _CustomPageState extends State<CustomPage> {
   final MapController mapController = MapController();
+  final List<Marker> userLocationMarkers = <Marker>[];
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +38,17 @@ class _CustomPageState extends State<CustomPage> {
                     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: <String>['a', 'b', 'c'],
               ),
+              MarkerLayerOptions(markers: userLocationMarkers),
               LocationOptions(
+                markers: userLocationMarkers,
                 onLocationUpdate: (LatLngData ld) {
-                  print(
-                      'Location updated: ${ld?.location} (accuracy: ${ld?.accuracy})');
+                  print('Location updated: ${ld.location}');
                 },
                 onLocationRequested: (LatLngData ld) {
-                  if (ld == null || ld.location == null) {
+                  if (ld.location == null) {
                     return;
                   }
-                  mapController?.move(ld.location, 16.0);
+                  mapController.move(ld.location, 16.0);
                 },
                 buttonBuilder: (BuildContext context,
                     ValueNotifier<LocationServiceStatus> status,
@@ -65,7 +68,7 @@ class _CustomPageState extends State<CustomPage> {
                   );
                 },
                 markerBuilder: (BuildContext context, LatLngData ld,
-                    ValueNotifier<double> heading) {
+                    ValueNotifier<double?> heading) {
                   return Marker(
                     point: ld.location,
                     builder: (_) => Container(
@@ -77,7 +80,7 @@ class _CustomPageState extends State<CustomPage> {
                               Container(
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Colors.pink[300].withOpacity(0.7)),
+                                    color: Colors.pink[300]?.withOpacity(0.7)),
                                 height: 40.0,
                                 width: 40.0,
                               ),

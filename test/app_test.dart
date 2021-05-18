@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
 import 'package:flutter_map_location/src/types.dart';
 import 'package:flutter_test/flutter_test.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_map/flutter_map.dart';
 
 void main() {
