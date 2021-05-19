@@ -13,7 +13,7 @@ dependencies:
   flutter_compass: ^0.6.0
   flutter_map:
     git:
-      url: git://github.com/fleaflet/flutter_map.git
+      url: git://github.com/josxha/flutter_map.git
       ref: issues/829-nullsafety
   latlong2: ^0.8.0
   location: ^4.1.1
