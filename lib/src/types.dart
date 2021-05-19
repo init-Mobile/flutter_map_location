@@ -6,9 +6,9 @@ class LatLngData {
   final LatLng location;
 
   /// Estimated horizontal accuracy, radial, in meters.
-  final double accuracy;
+  final double? accuracy;
 
   bool highAccurency() {
-    return !(accuracy == null || accuracy <= 0.0 || accuracy > 30.0);
+    return !(accuracy == null || accuracy! <= 0.0 || accuracy! > 30.0);
   }
 }

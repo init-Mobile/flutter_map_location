@@ -12,10 +12,10 @@ import 'location_marker.dart';
 import 'location_options.dart';
 
 LocationMarkerBuilder _defaultMarkerBuilder =
-    (BuildContext context, LatLngData ld, ValueNotifier<double> heading) {
+    (BuildContext context, LatLngData? ld, ValueNotifier<double?> heading) {
   final double diameter = ld != null && ld.highAccurency() ? 60.0 : 120.0;
   return Marker(
-    point: ld.location,
+    point: ld!.location,
     builder: (_) => LocationMarker(ld: ld, heading: heading),
     height: diameter,
     width: diameter,
@@ -23,13 +23,13 @@ LocationMarkerBuilder _defaultMarkerBuilder =
 };
 
 class LocationLayer extends StatefulWidget {
-  const LocationLayer({Key key, @required this.options, this.map, this.stream})
+  const LocationLayer({Key? key, required this.options, this.map, this.stream})
       : assert(options != null),
         super(key: key);
 
   final LocationOptions options;
-  final MapState map;
-  final Stream<Null> stream;
+  final MapState? map;
+  final Stream<Null>? stream;
 
   @override
   _LocationLayerState createState() => _LocationLayerState();
@@ -38,20 +38,20 @@ class LocationLayer extends StatefulWidget {
 class _LocationLayerState extends State<LocationLayer>
     with WidgetsBindingObserver {
   final Location _location = Location();
-  final ValueNotifier<LocationServiceStatus> _serviceStatus =
-      ValueNotifier<LocationServiceStatus>(null);
-  final ValueNotifier<LatLngData> _lastLocation =
-      ValueNotifier<LatLngData>(null);
-  final ValueNotifier<double> _heading = ValueNotifier<double>(null);
+  final ValueNotifier<LocationServiceStatus?> _serviceStatus =
+      ValueNotifier<LocationServiceStatus?>(null);
+  final ValueNotifier<LatLngData?> _lastLocation =
+      ValueNotifier<LatLngData?>(null);
+  final ValueNotifier<double?> _heading = ValueNotifier<double?>(null);
 
-  StreamSubscription<LocationData> _onLocationChangedSub;
-  StreamSubscription<CompassEvent> _compassEventsSub;
+  StreamSubscription<LocationData>? _onLocationChangedSub;
+  StreamSubscription<CompassEvent>? _compassEventsSub;
   bool _locationRequested = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     _location.changeSettings(interval: widget.options.updateIntervalMs);
     if (widget.options.initiallyRequest) {
       _locationRequested = true;
@@ -59,7 +59,7 @@ class _LocationLayerState extends State<LocationLayer>
           (LocationServiceStatus status) => _serviceStatus.value = status);
     }
     _lastLocation.addListener(() {
-      final LatLngData loc = _lastLocation.value;
+      final LatLngData? loc = _lastLocation.value;
       widget.options.onLocationUpdate?.call(loc);
       if (loc == null || loc.location == null) {
         return;
@@ -76,7 +76,7 @@ class _LocationLayerState extends State<LocationLayer>
   void dispose() {
     _compassEventsSub?.cancel();
     _onLocationChangedSub?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -111,15 +111,15 @@ class _LocationLayerState extends State<LocationLayer>
     return Container(
         child: Stack(
       children: <Widget>[
-        ValueListenableBuilder<LatLngData>(
+        ValueListenableBuilder<LatLngData?>(
             valueListenable: _lastLocation,
-            builder: (BuildContext context, LatLngData ld, Widget child) {
+            builder: (BuildContext context, LatLngData? ld, Widget? child) {
               if (ld?.location == null) {
                 return Container();
               }
               final Marker marker = widget.options.markerBuilder != null
                   ? widget.options
-                      .markerBuilder(context, _lastLocation.value, _heading)
+                      .markerBuilder!(context, _lastLocation.value, _heading)
                   : _defaultMarkerBuilder(
                       context, _lastLocation.value, _heading);
               return MarkerLayerWidget(
@@ -172,16 +172,16 @@ class _LocationLayerState extends State<LocationLayer>
       _serviceStatus.value = LocationServiceStatus.unsubscribed;
     });
     await _compassEventsSub?.cancel();
-    _compassEventsSub = FlutterCompass.events.listen((CompassEvent event) {
+    _compassEventsSub = FlutterCompass.events!.listen((CompassEvent event) {
       _heading.value = event.heading;
     });
     return LocationServiceStatus.subscribed;
   }
 }
 
-LatLngData _locationDataToLatLng(LocationData ld) {
+LatLngData? _locationDataToLatLng(LocationData ld) {
   if (ld.latitude == null || ld.longitude == null) {
     return null;
   }
-  return LatLngData(LatLng(ld.latitude, ld.longitude), ld.accuracy);
+  return LatLngData(LatLng(ld.latitude!, ld.longitude!), ld.accuracy);
 }

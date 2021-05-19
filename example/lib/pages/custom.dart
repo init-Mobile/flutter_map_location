@@ -77,7 +77,7 @@ class _CustomPageState extends State<CustomPage> {
                               Container(
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: Colors.pink[300].withOpacity(0.7)),
+                                    color: Colors.pink[300]!.withOpacity(0.7)),
                                 height: 40.0,
                                 width: 40.0,
                               ),

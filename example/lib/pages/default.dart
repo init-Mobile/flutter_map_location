@@ -61,7 +61,7 @@ class _DefaultPageState extends State<DefaultPage> {
                           child: ValueListenableBuilder<LocationServiceStatus>(
                               valueListenable: status,
                               builder: (BuildContext context,
-                                  LocationServiceStatus value, Widget child) {
+                                  LocationServiceStatus value, Widget? child) {
                                 switch (value) {
                                   case LocationServiceStatus.disabled:
                                   case LocationServiceStatus.permissionDenied:
