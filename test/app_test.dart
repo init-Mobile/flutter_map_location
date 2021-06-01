@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
 import 'package:flutter_map_location/src/types.dart';
 import 'package:flutter_test/flutter_test.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_map/flutter_map.dart';
 
 void main() {
   testWidgets('Render app', (WidgetTester tester) async {
@@ -32,14 +32,11 @@ class _TestApp extends StatelessWidget {
             ),
             layers: <LayerOptions>[
               TileLayerOptions(
-                  urlTemplate: 'https://{s}.tile.example.org/{z}/{x}/{y}.png',
-                  subdomains: <String>['a', 'b', 'c']),
+                  urlTemplate: 'https://{s}.tile.example.org/{z}/{x}/{y}.png', subdomains: <String>['a', 'b', 'c']),
               LocationOptions(
                 onLocationUpdate: (LatLngData ld) {},
                 onLocationRequested: (LatLngData ld) {},
-                buttonBuilder: (BuildContext context,
-                    ValueNotifier<LocationServiceStatus> status,
-                    Function onPressed) {
+                buttonBuilder: (BuildContext context, ValueNotifier<LocationServiceStatus> status, Function onPressed) {
                   return Align(
                     alignment: Alignment.bottomRight,
                     child: Padding(
@@ -52,6 +49,7 @@ class _TestApp extends StatelessWidget {
                     ),
                   );
                 },
+                markers: [],
               ),
             ],
           ),

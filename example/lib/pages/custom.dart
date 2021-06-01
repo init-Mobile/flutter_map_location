@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location/flutter_map_location.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../widgets/drawer.dart';
 
@@ -34,8 +35,7 @@ class _CustomPageState extends State<CustomPage> {
             ),
             layers: <LayerOptions>[
               TileLayerOptions(
-                urlTemplate:
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: <String>['a', 'b', 'c'],
               ),
               MarkerLayerOptions(markers: userLocationMarkers),
@@ -48,11 +48,9 @@ class _CustomPageState extends State<CustomPage> {
                   if (ld.location == null) {
                     return;
                   }
-                  mapController.move(ld.location, 16.0);
+                  mapController.move(ld.location!, 16.0);
                 },
-                buttonBuilder: (BuildContext context,
-                    ValueNotifier<LocationServiceStatus> status,
-                    Function onPressed) {
+                buttonBuilder: (BuildContext context, ValueNotifier<LocationServiceStatus> status, Function onPressed) {
                   return Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
@@ -67,10 +65,9 @@ class _CustomPageState extends State<CustomPage> {
                     ),
                   );
                 },
-                markerBuilder: (BuildContext context, LatLngData ld,
-                    ValueNotifier<double?> heading) {
+                markerBuilder: (BuildContext context, LatLngData ld, ValueNotifier<double?> heading) {
                   return Marker(
-                    point: ld.location,
+                    point: ld.location ?? LatLng(0, 0),
                     builder: (_) => Container(
                       child: Column(
                         children: <Widget>[
@@ -78,9 +75,8 @@ class _CustomPageState extends State<CustomPage> {
                             alignment: AlignmentDirectional.center,
                             children: <Widget>[
                               Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.pink[300]?.withOpacity(0.7)),
+                                decoration:
+                                    BoxDecoration(shape: BoxShape.circle, color: Colors.pink[300]?.withOpacity(0.7)),
                                 height: 40.0,
                                 width: 40.0,
                               ),

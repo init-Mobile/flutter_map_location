@@ -36,8 +36,7 @@ class _DefaultPageState extends State<DefaultPage> {
             ),
             layers: <LayerOptions>[
               TileLayerOptions(
-                urlTemplate:
-                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 subdomains: <String>['a', 'b', 'c'],
               ),
               // USAGE NOTE 3: Add the layer for the marker
@@ -52,11 +51,9 @@ class _DefaultPageState extends State<DefaultPage> {
                   if (ld.location == null) {
                     return;
                   }
-                  mapController.move(ld.location, 16.0);
+                  mapController.move(ld.location!, 16.0);
                 },
-                buttonBuilder: (BuildContext context,
-                    ValueNotifier<LocationServiceStatus> status,
-                    Function onPressed) {
+                buttonBuilder: (BuildContext context, ValueNotifier<LocationServiceStatus> status, Function onPressed) {
                   return Align(
                     alignment: Alignment.bottomRight,
                     child: Padding(
@@ -64,8 +61,7 @@ class _DefaultPageState extends State<DefaultPage> {
                       child: FloatingActionButton(
                           child: ValueListenableBuilder<LocationServiceStatus>(
                               valueListenable: status,
-                              builder: (BuildContext context,
-                                  LocationServiceStatus value, Widget? child) {
+                              builder: (BuildContext context, LocationServiceStatus value, Widget? child) {
                                 switch (value) {
                                   case LocationServiceStatus.disabled:
                                   case LocationServiceStatus.permissionDenied:

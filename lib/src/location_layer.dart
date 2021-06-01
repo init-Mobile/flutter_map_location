@@ -6,18 +6,17 @@ import 'package:flutter_compass/flutter_compass.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_location/src/types.dart';
-import 'package:location/location.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 
 import 'location_marker.dart';
 import 'location_options.dart';
 
-LocationMarkerBuilder _defaultMarkerBuilder =
-    (BuildContext context, LatLngData ld, ValueNotifier<double?> heading) {
+LocationMarkerBuilder _defaultMarkerBuilder = (BuildContext context, LatLngData ld, ValueNotifier<double?> heading) {
   final double diameter = ld.highAccurency() ? 60.0 : 120.0;
   return Marker(
-    point: ld.location,
+    point: ld.location ?? LatLng(0, 0),
     builder: (_) => LocationMarker(ld: ld, heading: heading),
     height: diameter,
     width: diameter,
@@ -25,8 +24,7 @@ LocationMarkerBuilder _defaultMarkerBuilder =
 };
 
 class LocationLayer extends StatefulWidget {
-  const LocationLayer({Key? key, required this.options, this.map, this.stream})
-      : super(key: key);
+  const LocationLayer({Key? key, required this.options, this.map, this.stream}) : super(key: key);
 
   final LocationOptions options;
   final MapState? map;
@@ -36,13 +34,11 @@ class LocationLayer extends StatefulWidget {
   _LocationLayerState createState() => _LocationLayerState();
 }
 
-class _LocationLayerState extends State<LocationLayer>
-    with WidgetsBindingObserver {
+class _LocationLayerState extends State<LocationLayer> with WidgetsBindingObserver {
   final Location _location = Location();
   final ValueNotifier<LocationServiceStatus> _serviceStatus =
       ValueNotifier<LocationServiceStatus>(LocationServiceStatus.unknown);
-  final ValueNotifier<LatLngData> _lastLocation =
-      ValueNotifier<LatLngData>(const LatLngData(null, null));
+  final ValueNotifier<LatLngData> _lastLocation = ValueNotifier<LatLngData>(const LatLngData(null, null));
   final ValueNotifier<double?> _heading = ValueNotifier<double?>(null);
 
   StreamSubscription<LocationData>? _onLocationChangedSub;
@@ -55,8 +51,7 @@ class _LocationLayerState extends State<LocationLayer>
     WidgetsBinding.instance?.addObserver(this);
     _location.changeSettings(interval: widget.options.updateIntervalMs);
     _locationRequested = true;
-    _initOnLocationUpdateSubscription()
-        .then((LocationServiceStatus status) => _serviceStatus.value = status);
+    _initOnLocationUpdateSubscription().then((LocationServiceStatus status) => _serviceStatus.value = status);
     _lastLocation.addListener(() {
       final LatLngData loc = _lastLocation.value;
       widget.options.onLocationUpdate?.call(loc);
@@ -100,8 +95,7 @@ class _LocationLayerState extends State<LocationLayer>
       case AppLifecycleState.resumed:
         if (_serviceStatus.value == LocationServiceStatus.paused) {
           _serviceStatus.value = LocationServiceStatus.unknown;
-          _initOnLocationUpdateSubscription().then(
-              (LocationServiceStatus value) => _serviceStatus.value = value);
+          _initOnLocationUpdateSubscription().then((LocationServiceStatus value) => _serviceStatus.value = value);
         }
         break;
       case AppLifecycleState.inactive:
@@ -126,8 +120,7 @@ class _LocationLayerState extends State<LocationLayer>
       if (_serviceStatus.value != LocationServiceStatus.subscribed ||
           _lastLocation.value == const LatLngData(null, null) ||
           !await _location.serviceEnabled()) {
-        _initOnLocationUpdateSubscription().then(
-            (LocationServiceStatus value) => _serviceStatus.value = value);
+        _initOnLocationUpdateSubscription().then((LocationServiceStatus value) => _serviceStatus.value = value);
         _locationRequested = true;
       } else {
         widget.options.onLocationRequested?.call(_lastLocation.value);
@@ -147,8 +140,7 @@ class _LocationLayerState extends State<LocationLayer>
       }
     }
     await _onLocationChangedSub?.cancel();
-    _onLocationChangedSub =
-        _location.onLocationChanged.listen((LocationData ld) {
+    _onLocationChangedSub = _location.onLocationChanged.listen((LocationData ld) {
       _lastLocation.value = _locationDataToLatLng(ld);
     }, onError: (Object error) {
       _lastLocation.value = const LatLngData(null, null);
@@ -169,5 +161,5 @@ LatLngData _locationDataToLatLng(LocationData ld) {
   if (ld.latitude == null || ld.longitude == null) {
     return const LatLngData(null, null);
   }
-  return LatLngData(LatLng(ld.latitude, ld.longitude), ld.accuracy);
+  return LatLngData(LatLng(ld.latitude!, ld.longitude!), ld.accuracy);
 }
