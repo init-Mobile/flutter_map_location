@@ -7,8 +7,7 @@ import 'location_options.dart';
 
 class LocationPlugin extends MapPlugin {
   @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+  Widget createLayer(LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is LocationOptions) {
       return LocationLayer(options, mapState, stream);
     }
